@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  auctionme-server:
+    build: .
+    ports:
+      - '4000:4000'
+    depends_on:
+      - auctionme-db
+    container_name: auctionme-backend
+    networks:
+      - auctionme-network
+  auctionme-db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=TFb6RDfMFC9HBfGw6zXfJRnQpcbSTBI5
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    container_name: auctionme-db
+    networks:
+      - auctionme-network
+networks:
+  auctionme-network:
+    name: auctionme-network
+    driver: bridge
+volumes:
+  db_data:
