@@ -3,6 +3,9 @@ import { NextPage } from 'next';
 import AuthGuard from '../components/shared-components/AuthGuard';
 import GenericLoading from '../components/shared-components/GenericLoading';
 import { userAtom, userLoadingAtom } from '../lib/atoms/user.atom';
+import LandingLayout from '../components/landing-components/LandingLayout';
+import Header from '../components/header-components/Header';
+import Footer from '../components/footer-copmonents/Footer';
 
 const Home: NextPage = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -14,13 +17,13 @@ const Home: NextPage = () => {
         {user || userLoading ? (
           <GenericLoading />
         ) : (
-          <div className="flex items-center justify-center w-full">
-            <div className=" w-full bg-white" style={{ minHeight: '100vh' }}>
-              <div className="mb-4 mt-8 mx-auto">
-                Welcome to auction me
-              </div>
+          <>
+            <Header />
+            <div className="mb-4 mt-8">
+              <LandingLayout />
             </div>
-          </div>
+            <Footer />
+          </>
         )}
       </AuthGuard>
     </div>
