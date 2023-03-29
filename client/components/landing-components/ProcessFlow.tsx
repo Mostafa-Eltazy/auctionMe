@@ -1,10 +1,36 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import ParalledCard from '../shared-components/ParalledCard';
 import { BsBoxSeam } from 'react-icons/bs';
 import { RiAuctionLine } from 'react-icons/ri';
-import {TbCurrencyDollar } from 'react-icons/tb'
+import { TbCurrencyDollar } from 'react-icons/tb';
 
 const ProcessFlow = () => {
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observer.current = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            entry.target.classList.add('slide-in-blurred-bottom');
+          } else {
+            entry.target.classList.add('hide');
+          }
+        });
+      },
+      { threshold: 0.85 },
+    );
+
+    document.querySelectorAll('.process-icon').forEach(icon => {
+      observer.current?.observe(icon);
+    });
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, []);
+
   return (
     <div className="py-8">
       <h1 className="text-center font-serif text-5xl text-slate-600 mt-8">How it works ?</h1>
@@ -14,7 +40,7 @@ const ProcessFlow = () => {
         classes="md:px-10 my-4"
         leftComp={
           <div>
-            <p className=" bg-transparent text-blue-500  font-semibold  py-2 px-4 lg:px-8    ">
+            <p className="bg-transparent text-blue-500 font-semibold py-2 px-4 lg:px-8  process-icon">
               <BsBoxSeam style={{ fontSize: '150px' }} />
             </p>
           </div>
@@ -35,7 +61,7 @@ const ProcessFlow = () => {
         classes="md:px-10 my-4 "
         rightComp={
           <div>
-            <p className=" bg-transparent text-blue-500  font-semibold  py-2 px-4 lg:px-8    ">
+            <p className="bg-transparent text-blue-500 font-semibold py-2 px-4 lg:px-8  process-icon">
               <RiAuctionLine style={{ fontSize: '150px' }} />
             </p>
           </div>
@@ -56,7 +82,7 @@ const ProcessFlow = () => {
         classes="md:px-10 my-4 "
         leftComp={
           <div>
-            <p className=" bg-transparent text-blue-500  font-semibold  py-2 px-4 lg:px-8    ">
+            <p className="bg-transparent text-blue-500 font-semibold py-2 px-4 lg:px-8  process-icon">
               <TbCurrencyDollar style={{ fontSize: '150px' }} />
             </p>
           </div>
@@ -65,7 +91,8 @@ const ProcessFlow = () => {
           <div>
             <h3 className="text-3xl">Get Paid</h3>
             <p>
-              Once the auction is finalized, select an offer, complete the transaction<br/> and get paid 
+              Once the auction is finalized, select an offer, complete the transaction
+              <br /> and get paid
             </p>
           </div>
         }

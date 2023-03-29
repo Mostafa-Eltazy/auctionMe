@@ -7,27 +7,28 @@ import LandingLayout from '../components/landing-components/LandingLayout';
 import Header from '../components/header-components/Header';
 import Footer from '../components/footer-copmonents/Footer';
 
-const Home: NextPage = () => {
+const HomeIndex: NextPage = () => {
   const [user, setUser] = useAtom(userAtom);
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
+  
 
   return (
-    <div>
+    <>
       <AuthGuard loggedInRedirectUrl="/feed">
         {user || userLoading ? (
           <GenericLoading />
         ) : (
           <>
             <Header />
-            <div className="mb-4 mt-8">
+            <div className="mb-4">
               <LandingLayout />
             </div>
             <Footer />
           </>
         )}
       </AuthGuard>
-    </div>
+    </>
   );
 };
 
-export default Home;
+export default HomeIndex;

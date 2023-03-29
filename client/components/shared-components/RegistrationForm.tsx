@@ -8,38 +8,47 @@ import { registerUser } from '../../lib/api/user.api';
 import { userAtom } from '../../lib/atoms/user.atom';
 import { emailValidationObj, passwordValidationObj, userNameValidationObj } from '../../lib/validation/shared-validation';
 import { setAuthToken } from '../../util/token-storage';
-// import ValidationError from './ValidationError';
 import { toast } from 'react-toastify';
 import LoadingSpinner from './LoadingSpinner';
 import BadgeChecker from './BadgeChecker';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
+import { RiLockPasswordLine } from 'react-icons/ri';
+import { MdOutlineAlternateEmail } from 'react-icons/md';
+import { FiUser } from 'react-icons/fi';
+import MultiStepForm from './form-components/MultiStepForm';
+import ValidationError from './form-components/ValidationError';
 
-interface Props {
-  openLoginForm: () => void;
-}
+const schema = yup.object().shape({
+  firstname: yup.string().required('First name is required.'),
+  lastname: yup.string().required('Last name is required.'),
+  username: userNameValidationObj,
+  email: emailValidationObj,
+  password: passwordValidationObj,
+});
 
-const LoginForm = ({ openLoginForm }: Props) => {
+const childErrorMap = {
+  0: ['firstname', 'lastname'],
+  1: ['email', 'username'],
+  2: ['password'],
+};
+
+const RegistrationForm = () => {
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const router = useRouter();
-
-  const schema = yup.object().shape({
-    username: userNameValidationObj,
-    email: emailValidationObj,
-    password: passwordValidationObj,
-  });
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
+    getValues,
   } = useForm({
     shouldFocusError: false,
     resolver: yupResolver(schema),
     defaultValues: {
+      firstname: '',
+      lastname: '',
       username: '',
       email: '',
       password: '',
@@ -59,109 +68,154 @@ const LoginForm = ({ openLoginForm }: Props) => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      router.push('/feed');
-    }
-  }, [router, user]);
-
   return (
-    <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-      <div className="absolute inset-0 bg-gradient-to-l from-zinc-300 to-zinc-600 shadow-lg transform skew-y-6 sm:skew-y-0 sm:rotate-6 sm:rounded-3xl"></div>
-      <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-        <div className="max-w mx-auto">
-          <div>
-            <h1 className="text-2xl font-semibold text-center">Welcome Aboard</h1>
-          </div>
-          <div className="divide-y divide-gray-200">
-            <form className="py-8 text-sm  w-full space-y-6 text-gray-700 sm:text-lg sm:leading-10 " onSubmit={handleSubmit(registerHandler)}>
-              <div className="relative">
-                <input
-                  id="username"
-                  type="text"
-                  className="peer text-sm bg-slate-50 placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                  placeholder="User Name"
-                  {...register('username')}
-                  disabled={loading}
-                />
-                <label
-                  htmlFor="username"
-                  className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                >
-                  User Name
-                </label>
+    <div className="flex flex-col items-center justify-center p-10 pt-0">
+      <div className="md:w-1/2 bg-white   p-5 border-t border-t-blue-500  rounded-b-lg shadow-lg">
+        <h1 className="text-center font-serif text-3xl text-slate-600 pt-3 pb-5">Welcome Aboard</h1>
+        <form className=" " onSubmit={handleSubmit(registerHandler)}>
+          <MultiStepForm errorsObj={errors} errorRefrer={childErrorMap}>
+            <div>
+              <div className="flex flex-col py-3 items-center">
+                <div className="lg:w-1/2">
+                  <label htmlFor="firstname" className="mb-2">
+                    <FiUser className="text-blue-500 inline-block mb-1 mr-1" />
+                    <span className="text-sm">First name</span>
+                  </label>
+                  <input
+                    id="firstname"
+                    type="text"
+                    {...register('firstname')}
+                    value={watch('firstname')}
+                    disabled={loading}
+                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                  />
+                  {errors.firstname ? (
+                    <div className="flex items-start w-full mt-1">
+                      <ValidationError message={errors.firstname.message} />{' '}
+                    </div>
+                  ) : null}
+                </div>
               </div>
-              {/* {errors.username ? <ValidationError msg={errors.username.message} /> : null} */}
+              <div className="flex flex-col py-3 items-center">
+                <div className="lg:w-1/2">
+                  <label htmlFor="lastname" className="mb-2">
+                    <FiUser className="text-blue-500 inline-block mb-1 mr-1" />
+                    <span className="text-sm">Last name</span>
+                  </label>
+                  <input
+                    id="lastname"
+                    type="text"
+                    {...register('lastname')}
+                    value={watch('lastname')}
+                    disabled={loading}
+                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                  />
+                  {errors.lastname ? (
+                    <div className="flex items-start w-full mt-1">
+                      <ValidationError message={errors.lastname.message} />{' '}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="flex flex-col py-3 items-center">
+                <div className="lg:w-1/2">
+                  <label htmlFor="username" className="mb-2">
+                    <FiUser className="text-blue-500 inline-block mb-1 mr-1" />
+                    <span className="text-sm">Username</span>
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    {...register('username')}
+                    value={watch('username')}
+                    disabled={loading}
+                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                  />
+                  {errors.username ? (
+                    <div className="flex items-start w-full mt-1">
+                      <ValidationError message={errors.username.message} />{' '}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
 
-              <div className="relative">
-                <input
-                  id="email"
-                  type="text"
-                  className="peer text-sm bg-slate-50 placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                  placeholder="Email address"
-                  {...register('email')}
-                  disabled={loading}
-                />
-                <label
-                  htmlFor="email"
-                  className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                >
-                  Email Address
-                </label>
+              <div className="flex flex-col py-3 items-center">
+                <div className="lg:w-1/2">
+                  <label htmlFor="email" className="mb-2">
+                    <MdOutlineAlternateEmail className="text-blue-500 inline-block mb-1 mr-1" />
+                    <span className="text-sm">Email</span>
+                  </label>
+                  <input
+                    id="email"
+                    type="text"
+                    {...register('email')}
+                    value={watch('email')}
+                    disabled={loading}
+                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                  />
+                  {errors.email ? (
+                    <div className="flex items-start w-full mt-1">
+                      {' '}
+                      <ValidationError message={errors.email.message} />
+                    </div>
+                  ) : null}
+                </div>
               </div>
-              {/* {errors.email ? <ValidationError msg={errors.email.message} /> : null} */}
+            </div>
+            <div>
+              <div className="flex flex-col py-3 items-center">
+                <div className="lg:w-1/2">
+                  <label htmlFor="password" className="mb-2">
+                    <RiLockPasswordLine className="text-blue-500 inline-block mb-1 mr-1" />
+                    <span className="text-sm">password</span>
+                  </label>
+                  <input
+                    id="password"
+                    {...register('password')}
+                    value={watch('password')}
+                    type={showPassword ? 'text' : 'password'}
+                    disabled={loading}
+                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                  />
+                  {errors.password ? (
+                    <div className="flex items-start w-full mt-1">
+                      <ValidationError message={errors.password.message} />{' '}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
 
-              <div className="relative">
-                <input
-                  id="password"
-                  {...register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  className="peer text-sm bg-slate-50 placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                  placeholder="Password"
-                  disabled={loading}
-                />
-                <label
-                  htmlFor="password"
-                  className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="relative flex justify-center">
+              <div className=" flex justify-center py-3">
                 {showPassword ? (
-                  <FaEye onClick={() => setShowPassword(!showPassword)} className="hover:cursor-pointer" />
+                  <FaEye onClick={() => setShowPassword(!showPassword)} className="text-blue-500 hover:cursor-pointer" />
                 ) : (
                   <FaEyeSlash onClick={() => setShowPassword(!showPassword)} className="hover:cursor-pointer" />
                 )}
               </div>
-              <div className="relative flex flex-wrap">
+              <div className=" flex flex-wrap justify-center py-3">
                 <BadgeChecker text="A small letter" condition={/[a-z]/.test(typedPasssword)} />
                 <BadgeChecker text="A capital letter" condition={/[A-Z]/.test(typedPasssword)} />
                 <BadgeChecker text="A special character" condition={/[\-_\=.#^()+`~'",<.>/[\]{};:|\\@$!%*?&]/.test(typedPasssword)} />
                 <BadgeChecker text="A number" condition={/\d/.test(typedPasssword)} />
                 <BadgeChecker text="8 character min" condition={typedPasssword.length > 7} />
               </div>
-              {/* {errors.password ? <ValidationError msg={errors.password.message} /> : null} */}
-              <div className="relative">
-                <button
-                  type="submit"
-                  className="w-full px-6 py-2.5 bg-purple-100 text-black font-medium text-xs leading-tight rounded shadow-md hover:bg-purple-300 hover:shadow-lg focus:bg-purple-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-400 active:shadow-lg transition duration-150 ease-in-out"
-                >
-                  {loading ? <LoadingSpinner /> : 'Register'}
-                </button>
-              </div>
-              <p className="text-center text-sm">
-                Already a member
-                <span className="underline hover:text-purple-700 hover:shadow-lg hover:cursor-pointer ml-1" onClick={openLoginForm}>
-                  log in
-                </span>
-              </p>
-            </form>
+            </div>
+          </MultiStepForm>
+          <div className="flex justify-center my-9">
+            <button
+              type="submit"
+              className="disabled:border-gray-300 disabled:text-gray-500 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded px-8 py-1 border border-blue-500 bg-transparent text-blue-600 hover:bg-blue-500 hover:text-white hover:border-blue-500"
+              disabled={loading}
+            >
+              {loading ? <LoadingSpinner /> : 'Sign up'}
+            </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegistrationForm;

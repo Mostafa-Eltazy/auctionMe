@@ -12,13 +12,8 @@ const computeUpdateAt = (updatedAt: string): string => {
   return `${moment(updatedAt).fromNow()}`;
 };
 
-const isFollower = (userA: User | null, userB?: User) => {
-  const userAFollowers =
-    userA?.followers?.map(({ followingId }) => {
-      return followingId;
-    }) ?? [];
+const resolveUrlQuery = (query? : string | string[]): string | undefined =>{
+  return Array.isArray(query) ? query.join(',') : query
+}
 
-  return userAFollowers.length ? (userAFollowers?.findIndex((id: any) => id === userB?.id) > -1 ? true : false) : false;
-};
-
-export { renderPlaceholders, computeUpdateAt, isFollower };
+export { renderPlaceholders, computeUpdateAt, resolveUrlQuery };
