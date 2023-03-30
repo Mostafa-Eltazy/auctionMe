@@ -4,6 +4,8 @@ export interface UserWithInfo {
   email: string;
   username: string;
   profilePicture: string | null;
+  firstname: string;
+  lastname:string;
   createdAt?: Date;
   updatedAt?: Date;
   

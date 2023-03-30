@@ -1,10 +1,28 @@
-import React from 'react'
-import LoginLayout from '../../../components/auth-components/LoginLayout'
+import { useAtom } from 'jotai';
+import React from 'react';
+import LoginLayout from '../../../components/auth-components/LoginLayout';
+import AuthGuard from '../../../components/shared-components/AuthGuard';
+import GenericLoading from '../../../components/shared-components/GenericLoading';
+import { userAtom, userLoadingAtom } from '../../../lib/atoms/user.atom';
 
-function index() {
+const LoginIndex = () => {
+  
+  const [user, setUser] = useAtom(userAtom);
+  const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
+
   return (
-    <LoginLayout />
-  )
-}
+    <>
+      <AuthGuard loggedInRedirectUrl="/">
+        {user || userLoading ? (
+          <GenericLoading />
+        ) : (
+          <>
+            <LoginLayout />
+          </>
+        )}
+      </AuthGuard>
+    </>
+  );
+};
 
-export default index
+export default LoginIndex;

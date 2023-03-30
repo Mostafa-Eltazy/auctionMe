@@ -5,13 +5,13 @@ import * as yup from 'yup';
 import { logInUser } from '../../lib/api/user.api';
 import { userAtom } from '../../lib/atoms/user.atom';
 import { setAuthToken } from '../../util/token-storage';
-// import ValidationError from './ValidationError';
 import { useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import { toast } from 'react-toastify';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
+import ValidationError from './form-components/ValidationError';
 
 const LoginForm = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -67,9 +67,13 @@ const LoginForm = () => {
                 disabled={loading}
                 {...register('email')}
               />
+              {errors.email ? (
+                <div className="mt-1">
+                  <ValidationError message={errors.email.message} />
+                </div>
+              ) : null}
             </div>
           </div>
-          {/* {errors.email ? <ValidationError msg={errors.email.message} /> : null} */}
 
           <div className="flex flex-col py-3 items-center">
             <div className="lg:w-1/2">
@@ -83,8 +87,12 @@ const LoginForm = () => {
                 type={showPassword ? 'text' : 'password'}
                 className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
                 disabled={loading}
-                
               />
+              {errors.password ? (
+                <div className="mt-1">
+                  <ValidationError message={errors.password.message} />
+                </div>
+              ) : null}
             </div>
           </div>
           <div className=" flex justify-center py-3">
@@ -94,7 +102,6 @@ const LoginForm = () => {
               <FaEyeSlash onClick={() => setShowPassword(!showPassword)} className="hover:cursor-pointer" />
             )}
           </div>
-          {/* {errors.password ? <ValidationError msg={errors.password.message} /> : null} */}
           <div className="flex justify-center my-9">
             <button
               type="submit"

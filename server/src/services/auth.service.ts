@@ -15,7 +15,7 @@ export class AuthService implements IAuthService {
   private AUTH_TOKEN_EXPIRY = '7d';
 
   public async registerUserAndSignToken(userData: Partial<User>): Promise<{ token: string; newUser: User }> {
-    const { email, password, username, profilePicture } = userData;
+    const { email, password, username, profilePicture, firstname, lastname } = userData;
     const hashedPassword = await this.hashPassword(password as string);
     const newUser = await prisma.user.create({
       data: {
@@ -23,6 +23,8 @@ export class AuthService implements IAuthService {
         username,
         password: hashedPassword,
         profilePicture,
+        firstname,
+        lastname
       } as User,
     });
 
@@ -36,7 +38,7 @@ export class AuthService implements IAuthService {
 
     const user = await prisma.user.findUniqueOrThrow({
       where: { username, email },
-      select: { id: true, username: true, email: true, profilePicture: true, password: true },
+      select: { id: true, username: true, email: true, profilePicture: true, password: true, firstname:true, lastname:true },
     });
 
     const isPasswordValid = await this.comparePassword(password as string, user.password);

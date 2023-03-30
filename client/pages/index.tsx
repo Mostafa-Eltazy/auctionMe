@@ -7,14 +7,14 @@ import LandingLayout from '../components/landing-components/LandingLayout';
 import Header from '../components/header-components/Header';
 import Footer from '../components/footer-copmonents/Footer';
 
-const HomeIndex: NextPage = () => {
+const LandingIndex: NextPage = () => {
   const [user, setUser] = useAtom(userAtom);
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
   
 
   return (
     <>
-      <AuthGuard loggedInRedirectUrl="/feed">
+      <AuthGuard loggedInRedirectUrl="/home">
         {user || userLoading ? (
           <GenericLoading />
         ) : (
@@ -31,4 +31,4 @@ const HomeIndex: NextPage = () => {
   );
 };
 
-export default HomeIndex;
+export default LandingIndex;

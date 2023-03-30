@@ -55,10 +55,10 @@ const RegistrationForm = () => {
     },
   });
   const typedPasssword = watch('password');
-  const registerHandler = async (formData: { email: string; password: string; username: string }): Promise<void> => {
+  const registerHandler = async (formData: { email: string; password: string; username: string; firstname: string; lastname: string }): Promise<void> => {
     setLoading(true);
     try {
-      const resData = await registerUser(formData.email, formData.password, formData.username);
+      const resData = await registerUser(formData.email, formData.password, formData.username, formData.firstname, formData.lastname);
       setAuthToken(resData.token);
       setUser(resData);
     } catch (e) {
@@ -94,27 +94,26 @@ const RegistrationForm = () => {
                       <ValidationError message={errors.firstname.message} />{' '}
                     </div>
                   ) : null}
-                </div>
-              </div>
-              <div className="flex flex-col py-3 items-center">
-                <div className="lg:w-1/2">
-                  <label htmlFor="lastname" className="mb-2">
-                    <FiUser className="text-blue-500 inline-block mb-1 mr-1" />
-                    <span className="text-sm">Last name</span>
-                  </label>
-                  <input
-                    id="lastname"
-                    type="text"
-                    {...register('lastname')}
-                    value={watch('lastname')}
-                    disabled={loading}
-                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
-                  />
-                  {errors.lastname ? (
-                    <div className="flex items-start w-full mt-1">
-                      <ValidationError message={errors.lastname.message} />{' '}
-                    </div>
-                  ) : null}
+
+                  <div className="mt-6">
+                    <label htmlFor="lastname" className="mb-2">
+                      <FiUser className="text-blue-500 inline-block mb-1 mr-1" />
+                      <span className="text-sm">Last name</span>
+                    </label>
+                    <input
+                      id="lastname"
+                      type="text"
+                      {...register('lastname')}
+                      value={watch('lastname')}
+                      disabled={loading}
+                      className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                    />
+                    {errors.lastname ? (
+                      <div className="flex items-start w-full mt-1">
+                        <ValidationError message={errors.lastname.message} />{' '}
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
@@ -138,29 +137,26 @@ const RegistrationForm = () => {
                       <ValidationError message={errors.username.message} />{' '}
                     </div>
                   ) : null}
-                </div>
-              </div>
-
-              <div className="flex flex-col py-3 items-center">
-                <div className="lg:w-1/2">
-                  <label htmlFor="email" className="mb-2">
-                    <MdOutlineAlternateEmail className="text-blue-500 inline-block mb-1 mr-1" />
-                    <span className="text-sm">Email</span>
-                  </label>
-                  <input
-                    id="email"
-                    type="text"
-                    {...register('email')}
-                    value={watch('email')}
-                    disabled={loading}
-                    className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
-                  />
-                  {errors.email ? (
-                    <div className="flex items-start w-full mt-1">
-                      {' '}
-                      <ValidationError message={errors.email.message} />
-                    </div>
-                  ) : null}
+                  <div className="mt-6">
+                    <label htmlFor="email" className="mb-2">
+                      <MdOutlineAlternateEmail className="text-blue-500 inline-block mb-1 mr-1" />
+                      <span className="text-sm">Email</span>
+                    </label>
+                    <input
+                      id="email"
+                      type="text"
+                      {...register('email')}
+                      value={watch('email')}
+                      disabled={loading}
+                      className="bg-slate-50 rounded border border-gray-100 text-gray-900 text-sm  focus:outline-none  focus:border-gray-300 w-full p-2"
+                    />
+                    {errors.email ? (
+                      <div className="flex items-start w-full mt-1">
+                        {' '}
+                        <ValidationError message={errors.email.message} />
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>

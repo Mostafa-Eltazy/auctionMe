@@ -10,19 +10,23 @@ export class AuthController implements IAuthController {
   constructor(private authService: IAuthService = new AuthService()) {}
 
   public register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { username, password, email } = req.body;
+    const { username, password, email, firstname, lastname } = req.body;
 
     try {
       const data = await this.authService.registerUserAndSignToken({
         username: username,
         password: password,
         email: email,
+        firstname: firstname,
+        lastname: lastname
       });
 
       res.status(201).cookie('auth', data.token, { httpOnly: true }).json({
         id: data.newUser.id,
         username: data.newUser.username,
         email: data.newUser.email,
+        firstname:data.newUser.firstname,
+        lastname:data.newUser.lastname,
         profilePicture: data.newUser.profilePicture,
         token: data.token,
       });
@@ -46,6 +50,8 @@ export class AuthController implements IAuthController {
         username: data.user.username,
         email: data.user.email,
         profilePicture: data.user.profilePicture,
+        firstname: data.user.firstname,
+        lastname: data.user.lastname,
         token: data.token,
       });
     } catch (err) {

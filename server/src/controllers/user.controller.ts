@@ -34,6 +34,8 @@ export class UserController implements IUserController {
       username: user.username,
       email: user.email,
       profilePicture: user.profilePicture,
+      firstname: user.firstname,
+      lastname: user.lastname,
     });
   };
 
