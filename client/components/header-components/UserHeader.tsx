@@ -5,35 +5,39 @@ import React from 'react';
 import { userAtom } from '../../lib/atoms/user.atom';
 import Logo from './Logo';
 
-const UserHeader = () => {
+interface Props {
+  routes: { [key: string]: string }[];
+  active: string;
+}
+const activeRouteStyle = 'text-slate-800 border-b-sky-600 border-b-2 '
+const idleRouteStyle = 'text-slate-600'
+const UserHeader = ({ routes, active }: Props) => {
   const [user, setUser] = useAtom(userAtom);
-
-  console.log(user);
+  console.log(active)
   return (
     <>
-      <div className="col-span-1 flex justify-center items-center">
+      <div className="col-span-2 flex justify-center items-center">
         <Link href="/">
-          <Logo />
+          <Logo logoSize="35px" />
         </Link>
       </div>
-      <div className="col-span-1  flex justify-center items-center"></div>
-      <div className="col-span-1 flex justify-center items-center">
-        {/* <img
-                  className="rounded-full"
-                  src={`${user?.profilePicture || '/static/placeholder.jpeg'}`}
-                  style={{ objectFit: 'contain' }}
-                  width={200}
-                  height={200}
-                /> */}
-      
-          <Image
-            src={`${user?.profilePicture || '/static/placeholder.jpeg'}`}
-            className="object-contain rounded-full"
-            alt=""
-            width={100}
-            height={100}
-            
-          />
+      <div className="col-span-4  flex justify-between items-center">
+        {routes.map(route => (
+          <li className={`list-none text-sm font-serif py-4 px-2 ${active === route.slug ? activeRouteStyle : idleRouteStyle}`} key={route.slug}>
+            <Link  className="hover:text-slate-400 " href={`/${route.slug}`}>
+              <span>{route.name}</span>
+            </Link>
+          </li>
+        ))}
+      </div>
+      <div className="col-span-2 flex justify-center items-center">
+        <Image
+          src={`${user?.profilePicture || '/static/placeholder.jpeg'}`}
+          className="rounded-full header-profile-picture"
+          alt={`${user?.username ? `${user?.username} profile picture` : 'profile picture'}`}
+          width={100}
+          height={100}
+        />
       </div>
     </>
   );

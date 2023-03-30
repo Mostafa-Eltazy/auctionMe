@@ -6,19 +6,20 @@ import AuthGuard from '../../components/shared-components/AuthGuard';
 import GenericLoading from '../../components/shared-components/GenericLoading';
 import { userAtom, userLoadingAtom } from '../../lib/atoms/user.atom';
 
-const HomeIndex: NextPage = () => {
+const WatchlistIndex: NextPage = () => {
   const [user, setUser] = useAtom(userAtom);
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
+
 
   return (
     <>
       <AuthGuard loggedOutRedirectUrl="/">
-        {userLoading ? (
+        {!user || userLoading ? (
           <GenericLoading />
         ) : (
           <>
-            <Header />
-            <div className="mb-4">Home Page</div>
+            <Header page='watchlist'/>
+            <div className="mb-4">watchlist Page</div>
             <Footer />
           </>
         )}
@@ -27,4 +28,4 @@ const HomeIndex: NextPage = () => {
   );
 };
 
-export default HomeIndex;
+export default WatchlistIndex;

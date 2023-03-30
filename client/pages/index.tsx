@@ -14,7 +14,7 @@ const LandingIndex: NextPage = () => {
 
   return (
     <>
-      <AuthGuard loggedInRedirectUrl="/home">
+      <AuthGuard loggedInRedirectUrl="/dashboard">
         {user || userLoading ? (
           <GenericLoading />
         ) : (

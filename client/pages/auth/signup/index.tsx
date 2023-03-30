@@ -11,7 +11,7 @@ const SignupIndex=() =>{
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
 
   return (
-    <AuthGuard loggedInRedirectUrl="/">
+    <AuthGuard loggedInRedirectUrl="/dashboard">
     {user || userLoading ? (
       <GenericLoading />
       ) : (

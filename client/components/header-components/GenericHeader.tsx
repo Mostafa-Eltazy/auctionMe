@@ -7,7 +7,13 @@ const GenericHeader = () => {
     <>
       <div className="col-span-1 flex justify-center items-center">
         <Link href="/">
-          <Logo />
+          <Logo
+            logoText={
+              <span className="font-serif text-slate-600">
+                <i>A</i>uctionMe
+              </span>
+            }
+          />
         </Link>
       </div>
       <div className="col-span-1 hidden md:block"></div>

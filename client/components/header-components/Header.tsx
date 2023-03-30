@@ -6,8 +6,12 @@ import { useAtom } from 'jotai';
 import { userAtom, userLoadingAtom } from '../../lib/atoms/user.atom';
 import GenericHeader from './GenericHeader';
 import UserHeader from './UserHeader';
+import { headerRoutes } from '../../util/constants';
 
-const Header = () => {
+interface Props {
+  page?: string
+}
+const Header = ({page}:Props) => {
   const [isSticky, setIsSticky] = useState(false);
   const [user, setUser] = useAtom(userAtom);
 
@@ -29,8 +33,15 @@ const Header = () => {
   }, []);
 
   return (
-    <header className={`grid grid-cols-2 md:grid-cols-3 bg-slate-50 pt-6 pb-2 ${isSticky ? 'top-0 z-10 sticky shadow-lg w-full' : ''} `}>
-      {user ? <UserHeader /> : <GenericHeader />}
+    <header className={`grid ${user ? 'grid-cols-8' : 'grid-cols-2 md:grid-cols-3'} bg-slate-50 pt-2 ${isSticky ? 'top-0 z-10 sticky shadow-lg w-full' : ''} `}>
+      {user ? (
+        <UserHeader
+          routes={headerRoutes}
+          active={page || ''}
+        />
+      ) : (
+        <GenericHeader />
+      )}
     </header>
   );
 };

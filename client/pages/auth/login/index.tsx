@@ -12,7 +12,7 @@ const LoginIndex = () => {
 
   return (
     <>
-      <AuthGuard loggedInRedirectUrl="/">
+      <AuthGuard loggedInRedirectUrl="/dashboard">
         {user || userLoading ? (
           <GenericLoading />
         ) : (
