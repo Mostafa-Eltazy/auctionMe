@@ -19,8 +19,8 @@ import MultiStepForm from './form-components/MultiStepForm';
 import ValidationError from './form-components/ValidationError';
 
 const schema = yup.object().shape({
-  firstname: yup.string().required('First name is required.'),
-  lastname: yup.string().required('Last name is required.'),
+  firstname: yup.string().required('First name is required.').max(20,'Cant\'t exccede 20 cahrechters'),
+  lastname: yup.string().required('Last name is required.').max(20,'Cant\'t exccede 20 cahrechters'),
   username: userNameValidationObj,
   email: emailValidationObj,
   password: passwordValidationObj,

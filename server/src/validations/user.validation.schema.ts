@@ -12,8 +12,8 @@ export const registerUserReqSchema = {
       email: joi.string().email().required(),
       profilePicture: joi.string(),
       password: passwordSchema,
-      firstname: joi.string().required(),
-      lastname: joi.string().required()
+      firstname: joi.string().required().max(20),
+      lastname: joi.string().required().max(20)
 
     })
     .required(),
