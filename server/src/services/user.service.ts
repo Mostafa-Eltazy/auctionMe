@@ -24,7 +24,7 @@ export class UserService implements IUserService {
     });
   }
 
-  getUserStats = async (
+  public getUserStats = async (
     userId: number,
   ): Promise<{ username: string; profilePicture: string | null; }> => {
     const data = await prisma.user.findUniqueOrThrow({

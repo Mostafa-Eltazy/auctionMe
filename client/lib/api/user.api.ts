@@ -9,11 +9,13 @@ export const logInUser = async (email: string, password: string): Promise<User> 
   return response.data;
 };
 
-export const registerUser = async (email: string, password: string, username: string): Promise<User> => {
+export const registerUser = async (email: string, password: string, username: string, firstname:string, lastname:string): Promise<User> => {
   const response = await client.post<User>(`auth/register`, {
     email,
     password,
     username,
+    firstname,
+    lastname
   });
   return response.data;
 };

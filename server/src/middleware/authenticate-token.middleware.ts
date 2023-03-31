@@ -18,6 +18,8 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
         email: true,
         password: true,
         username: true,
+        firstname:true,
+        lastname:true,
         profilePicture: true,
         createdAt: true,
         updatedAt: true,
