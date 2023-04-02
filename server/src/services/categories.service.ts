@@ -8,9 +8,7 @@ export interface ICategoriesService {
 export class CategoriesService implements ICategoriesService {
 
   public async getCategories(): Promise<Partial<Category>[]> {
-    return prisma.category.findMany({
-      select: { id: true, name:true, slug:true,description:true,createdAt:true,updatedAt:true, subCategories:true },
-    });
+    return prisma.category.findMany();
   }
 
   
