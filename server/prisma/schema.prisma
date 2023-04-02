@@ -22,18 +22,17 @@ model User {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  Auction Auction[] @relation("OwnsAuction")
-  Bid     Bid[]     @relation("AddsBid")
+  Auction Auction[] @relation("auctions")
+  Bid     Bid[]     @relation("bids")
 
   @@map("users")
 }
 
 model Auction {
   id          Int         @id @default(autoincrement())
-  startDate   DateTime
-  endDate     DateTime
-  startTime   DateTime
-  endTime     DateTime
+  title       String
+  startDate   DateTime  @db.Timestamptz
+  endDate     DateTime  @db.Timestamptz
   type        AuctionType
   startingBid Int         @default(0)
 
@@ -41,8 +40,8 @@ model Auction {
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
   // relations //////////////////////
   auctioneerId Int      @map("auctioneer_id")
-  auctioneer   User     @relation("OwnsAuction", fields: [auctioneerId], references: [id])
-  Bid          Bid[] @relation("HasBid")
+  auctioneer   User     @relation("auctions", fields: [auctioneerId], references: [id])
+  Bid          Bid[] @relation("bids")
 
   @@map("auctions")
 }
@@ -55,9 +54,9 @@ model Bid {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
   // relations //////////////////////
   biderId   Int      @map("bider_id")
-  bider     User     @relation("AddsBid", fields: [biderId], references: [id])
+  bider     User     @relation("bids", fields: [biderId], references: [id])
   auctionId Int      @map("auction_id")
-  auction   Auction  @relation("HasBid", fields: [auctionId], references: [id])
+  auction   Auction  @relation("bids", fields: [auctionId], references: [id])
 
   @@map("bids")
 }
@@ -66,7 +65,7 @@ model Item {
   id              Int      @id @default(autoincrement())
   name            String
   description     String   @default("")
-  productPictures String[]
+  pictures String[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz

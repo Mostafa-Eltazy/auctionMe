@@ -35,7 +35,7 @@ const UserHeader = ({ routes, active }: Props) => {
         <PopUpMenu
           holderComponent={
             <Image
-              src={`${user?.profilePicture || '/static/placeholder.jpeg'}`}
+              src={`${user?.profilePicture || '/static/placeholder.webp'}`}
               className="rounded-full header-profile-picture"
               alt={`${user?.username ? `${user?.username} profile picture` : 'profile picture'}`}
               width={100}

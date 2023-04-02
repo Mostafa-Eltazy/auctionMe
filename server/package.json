@@ -6,6 +6,7 @@
     "db:migrate": "prisma migrate dev",
     "db:migrate:create": "prisma migrate dev --create-only",
     "db:generate": "prisma generate",
+    "db:reset":"npx prisma migrate reset --preview-feature",
     "watch:compile": "env-cmd nodemon src/server.ts",
     "watch:typing": "tsc --noEmit --watch",
     "watch": "run-p watch:compile watch:typing",
