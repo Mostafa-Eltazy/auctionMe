@@ -165,5 +165,20 @@
   }
 }
 
+.rotate-icon {
+  transition: transform 0.4s ease;
+}
 
+.rotate-icon.rotate {
+  transform: rotate(90deg);
+}
+.Accordion__Content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease-out;
+}
 
+.Accordion__Content--open {
+  max-height: 100vh;
+  transition: max-height 0.35s ease-in;
+}

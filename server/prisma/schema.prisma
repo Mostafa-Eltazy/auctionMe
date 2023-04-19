@@ -16,12 +16,106 @@ model User {
   password       String
   username       String  @unique
   profilePicture String? @map("profile_picture")
-  firstname  String  @default("")
-  lastname  String  @default("")
-
+  firstname      String  @default("")
+  lastname       String  @default("")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
+  Auction Auction[] @relation("auctions")
+  Bid     Bid[]     @relation("bids")
+
   @@map("users")
+}
+
+model Auction {
+  id          Int         @id @default(autoincrement())
+  title       String
+  startDate   DateTime    @db.Timestamptz
+  endDate     DateTime    @db.Timestamptz
+  type        AuctionType
+  startingBid Int         @default(0)
+
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  // relations //////////////////////
+  auctioneerId Int      @map("auctioneer_id")
+  auctioneer   User     @relation("auctions", fields: [auctioneerId], references: [id])
+  bids         Bid[]
+  items        Item[]
+
+  @@map("auctions")
+}
+
+model Bid {
+  id    Int @id @default(autoincrement())
+  value Int
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  // relations //////////////////////
+  biderId   Int      @map("bider_id")
+  bider     User     @relation("bids", fields: [biderId], references: [id])
+  auctionId Int      @map("auction_id")
+  Auction   Auction  @relation(fields: [auctionId], references: [id])
+
+  @@map("bids")
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String   @default("")
+  pictures    String[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  // relations //////////////////////
+
+  categoryId    Int
+  category      Category    @relation("CategorizedWith", fields: [categoryId], references: [id])
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  auctionId     Int
+  Auction       Auction?    @relation(fields: [auctionId], references: [id])
+
+  @@map("items")
+}
+
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String
+  description String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  // relations //////////////////////
+
+  items         Item[]        @relation("CategorizedWith")
+  subCategories SubCategory[] @relation("IsSubcategory")
+
+  @@map("categories")
+}
+
+model SubCategory {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String
+  description String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  // relations //////////////////////
+
+  categoryId Int      @map("category_id")
+  category   Category @relation("IsSubcategory", fields: [categoryId], references: [id])
+  items      Item[]
+
+  @@map("subcategories")
+}
+
+enum AuctionType {
+  OPEN
+  BLIND
 }
