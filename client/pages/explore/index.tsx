@@ -6,6 +6,7 @@ import AuthGuard from '../../components/shared-components/AuthGuard';
 import GenericLoading from '../../components/shared-components/GenericLoading';
 import { userAtom, userLoadingAtom } from '../../lib/atoms/user.atom';
 import { useRouter } from 'next/router';
+import ExploreLayout from '../../components/explore-page-components/ExploreLayout';
 
 const ExploreIndex: NextPage = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -20,7 +21,7 @@ const ExploreIndex: NextPage = () => {
         ) : (
           <>
             <Header page='explore'/>
-            <div className="mb-4">Explore Page</div>
+            <ExploreLayout />
             <Footer />
           </>
         )}

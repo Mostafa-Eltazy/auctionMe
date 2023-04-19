@@ -31,8 +31,8 @@ model User {
 model Auction {
   id          Int         @id @default(autoincrement())
   title       String
-  startDate   DateTime  @db.Timestamptz
-  endDate     DateTime  @db.Timestamptz
+  startDate   DateTime    @db.Timestamptz
+  endDate     DateTime    @db.Timestamptz
   type        AuctionType
   startingBid Int         @default(0)
 
@@ -41,7 +41,8 @@ model Auction {
   // relations //////////////////////
   auctioneerId Int      @map("auctioneer_id")
   auctioneer   User     @relation("auctions", fields: [auctioneerId], references: [id])
-  Bid          Bid[] @relation("bids")
+  bids         Bid[]
+  items        Item[]
 
   @@map("auctions")
 }
@@ -56,23 +57,27 @@ model Bid {
   biderId   Int      @map("bider_id")
   bider     User     @relation("bids", fields: [biderId], references: [id])
   auctionId Int      @map("auction_id")
-  auction   Auction  @relation("bids", fields: [auctionId], references: [id])
+  Auction   Auction  @relation(fields: [auctionId], references: [id])
 
   @@map("bids")
 }
 
 model Item {
-  id              Int      @id @default(autoincrement())
-  name            String
-  description     String   @default("")
-  pictures String[]
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String   @default("")
+  pictures    String[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
   // relations //////////////////////
 
-  categoryId Int
-  category   Category @relation("CategorizedWith", fields: [categoryId], references: [id])
+  categoryId    Int
+  category      Category    @relation("CategorizedWith", fields: [categoryId], references: [id])
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  auctionId     Int
+  Auction       Auction?    @relation(fields: [auctionId], references: [id])
 
   @@map("items")
 }
@@ -105,6 +110,7 @@ model SubCategory {
 
   categoryId Int      @map("category_id")
   category   Category @relation("IsSubcategory", fields: [categoryId], references: [id])
+  items      Item[]
 
   @@map("subcategories")
 }

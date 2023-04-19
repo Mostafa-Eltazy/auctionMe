@@ -12,7 +12,8 @@ export class AuctionsController implements IAuctionsController {
 
   public createAuction = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const auctioneerId = parseInt(req.params.userId)
-    const { title, startDate, endDate, startTime, endTime, type, startingBid } = req.body;
+    
+    const { title, startDate, endDate, type, startingBid } = req.body;
     const newAuciton = await this.auctionsService.createNewAuction({
       title,
       startDate,
@@ -25,7 +26,10 @@ export class AuctionsController implements IAuctionsController {
   };
 
   public fetchAuctions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const auctions = await this.auctionsService.getAuctions();
-    res.status(200).json(auctions);
+    const limit = parseInt(req.query.limit as unknown as string);
+    const page = parseInt(req.query.page as unknown as string);
+
+    const auctionsData = await this.auctionsService.getAuctions(limit, page);
+    res.status(200).json(auctionsData);
   };
 }

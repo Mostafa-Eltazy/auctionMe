@@ -10,6 +10,7 @@ export const createAuctionSchema = {
       endDate: joi.string().required(),
       type: joi.string().required(),
       startingBid: joi.number().required(),
+      pictures: joi.string()
     })
     .required(),
 };
