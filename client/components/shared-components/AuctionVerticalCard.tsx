@@ -13,6 +13,7 @@ import ItemVerticalCard from './ItemVerticalCard';
 import ItemsCaurosel from './ItemsCaurosel';
 import { Category } from '../../lib/interfaces/category.interface';
 import {determineCategory} from '../../util/utilities'
+import { useSlidingPanel } from '../shared-components/sliding-panel-components/SlidingPanel';
 
 interface Props {
   auction: Auction;
@@ -36,6 +37,8 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
   };
 
   const { data: itemsData, isLoading: itemsLoading, refetch: itemsRefetch } = useAuctionItems({ auctionId: auction.id }, toggle);
+  const {slide, slideLoading, toggleSlide} = useSlidingPanel()
+  
   return (
     <div className="border p-3 my-5 rounded">
       <h3 className="mb-2 text-2xl font-serif text-slate-600 text-center md:text-left px-2">{auction.title} </h3>
@@ -69,7 +72,7 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
           </button>
         </div>
 
-        <button type="button" className={`flex items-center ${linkButtonStyle}`}>
+        <button type="button" className={`flex items-center ${linkButtonStyle}`} onClick={(e)=>toggleSlide(e)}>
           <SlLayers className="mr-1" />
           <p className="text-center text-sm"> Bidding details</p>
         </button>

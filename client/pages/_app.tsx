@@ -11,11 +11,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import GenericLoading from '../components/shared-components/GenericLoading';
+import SlidingPanel from '../components/shared-components/sliding-panel-components/SlidingPanel';
+import { sliderAtom } from '../lib/atoms/slider.atom';
 
 const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }: AppProps) {
   const [user, setUser] = useAtom(userAtom);
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
+  const [slide, setslide] = useAtom(sliderAtom)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,11 +38,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
     };
     fetchUserData();
-  }, [user]);
+  }, [setUser, setUserLoading, user]);
 
   return (
     <QueryClientProvider client={queryClient}>
+      <div className={`app-container ${slide ? 'blur ' : ''}`}>
       {userLoading ? <GenericLoading /> : <Component {...pageProps} />}
+      </div>
+      <SlidingPanel />
       <ToastContainer />
     </QueryClientProvider>
   );
