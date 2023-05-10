@@ -42,7 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={`app-container ${slide ? 'blur' : ''}`}>
+      <div className={`app-container ${slide ? 'blur ' : ''}`}>
       {userLoading ? <GenericLoading /> : <Component {...pageProps} />}
       </div>
       <SlidingPanel />

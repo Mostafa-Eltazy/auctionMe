@@ -24,23 +24,23 @@ export const useSlidingPanel = () => {
 };
 
 const SlidingPanel = ({ children }: Props) => {
-
   const { slide, closeSlidePanel } = useSlidingPanel();
   const [enterAnimation, setEnterAnimation] = useState<boolean>(false);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const closeToggle = useCallback(() => {
-    const currentChildElement = document.querySelector('.current-child') as HTMLElement;
+    const currentChildElement = document.querySelector('.panel-body') as HTMLElement;
     if (currentChildElement) {
       currentChildElement && currentChildElement.classList.add('exit-panel');
       currentChildElement && currentChildElement.addEventListener('animationend', closeSlidePanel);
     }
   }, [closeSlidePanel]);
-  
+
   const handleEntryAnimation = () => {
-    const currentChildElement = document.querySelector('.current-child') as HTMLElement;
+    const currentChildElement = document.querySelector('.panel-body') as HTMLElement;
     currentChildElement && currentChildElement.classList.remove('enter-panel');
     setEnterAnimation(false);
+    currentChildElement && currentChildElement.focus();
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const SlidingPanel = ({ children }: Props) => {
   }, [slide]);
 
   useEffect(() => {
-    const currentChildElement = document.querySelector('.current-child') as HTMLElement;
+    const currentChildElement = document.querySelector('.panel-body') as HTMLElement;
     if (enterAnimation) {
       currentChildElement && currentChildElement.classList.add('enter-panel');
       currentChildElement && currentChildElement.addEventListener('animationend', handleEntryAnimation);
@@ -75,8 +75,21 @@ const SlidingPanel = ({ children }: Props) => {
     };
   }, [closeToggle]);
 
+  const onMouseEnterHandelr = () => {
+    document.body.style.overflow = 'hidden';
+  };
+
+  const onMouseExitHandelr = () => {
+    document.body.style.overflow = '';
+  };
+
   return slide ? (
-    <div className={`border absolute right-0 top-0 w-full md:w-1/4 h-full bg-slate-50 rounded px-2 current-child`} ref={sliderRef}>
+    <div
+      className="border fixed right-0 top-0 w-full md:w-1/4 h-screen bg-slate-50 rounded px-2 panel-body"
+      ref={sliderRef}
+      onMouseEnter={onMouseEnterHandelr}
+      onMouseLeave={onMouseExitHandelr}
+    >
       <div className="flex items-center border-b pb-2 mt-2 hover:text-sky-600 hover:cursor-pointer" onClick={closeToggle}>
         <MdOutlineArrowBack />
         <span className="ml-2">Back</span>
