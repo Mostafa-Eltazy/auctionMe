@@ -12,12 +12,14 @@ import { useAuctionItems } from '../../lib/hooks/item.hooks';
 import ItemVerticalCard from './ItemVerticalCard';
 import ItemsCaurosel from './ItemsCaurosel';
 import { Category } from '../../lib/interfaces/category.interface';
-import {determineCategory} from '../../util/utilities'
+import { determineCategory } from '../../util/utilities';
 import { useSlidingPanel } from '../shared-components/sliding-panel-components/SlidingPanel';
+import { useAuctionBids } from '../../lib/hooks/bids.hooks';
+import BidsTable from './table-component/BidsTable';
 
 interface Props {
   auction: Auction;
-  categories? : Category[];
+  categories?: Category[];
 }
 
 const actionButtonStyle =
@@ -26,7 +28,13 @@ const linkButtonStyle =
   'disabled:border-gray-300 disabled:text-gray-500 bg-transperant text-slate-600   py-1.5 px-2 my-1 rounded hover:text-sky-600 hover:underline';
 
 const AuctionVerticalCard = ({ auction, categories }: Props) => {
+
   const [toggle, setToggle] = useState<boolean>(false);
+  const [openPanel, setOpenPanel] = useState<boolean>(false);
+
+  const { data: itemsData, isLoading: itemsLoading, refetch: itemsRefetch } = useAuctionItems(auction.id, toggle);
+  const { data: bidsData, isLoading: bidsDataLoading, refetch: bidsDataRefetch } = useAuctionBids(auction.id, openPanel);
+  const { handleSlidePanel } = useSlidingPanel(setOpenPanel, bidsDataLoading, <span>loading bids data...</span>, <BidsTable data={bidsData?.bids} isLoading={bidsDataLoading}/>);
 
   const handleToggleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     setToggle(!toggle);
@@ -36,9 +44,6 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
     }
   };
 
-  const { data: itemsData, isLoading: itemsLoading, refetch: itemsRefetch } = useAuctionItems({ auctionId: auction.id }, toggle);
-  const {slide, slideLoading, toggleSlide} = useSlidingPanel()
-  
   return (
     <div className="border p-3 my-5 rounded">
       <h3 className="mb-2 text-2xl font-serif text-slate-600 text-center md:text-left px-2">{auction.title} </h3>
@@ -72,7 +77,7 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
           </button>
         </div>
 
-        <button type="button" className={`flex items-center ${linkButtonStyle}`} onClick={(e)=>toggleSlide(e)}>
+        <button type="button" className={`flex items-center ${linkButtonStyle}`} onClick={e => handleSlidePanel(e)}>
           <SlLayers className="mr-1" />
           <p className="text-center text-sm"> Bidding details</p>
         </button>
@@ -83,7 +88,7 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
             <span>loading..</span>
           ) : (
             itemsData?.map(item => {
-              return <ItemVerticalCard key={item.id} item={item} classes="current-child" category={determineCategory(item.categoryId,categories ?? null)}/>;
+              return <ItemVerticalCard key={item.id} item={item} classes="current-child" category={determineCategory(item.categoryId, categories ?? null)} />;
             })
           )}
         </ItemsCaurosel>

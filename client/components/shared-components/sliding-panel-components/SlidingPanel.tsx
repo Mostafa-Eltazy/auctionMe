@@ -1,15 +1,19 @@
 import { useAtom } from 'jotai';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { MdOutlineArrowBack } from 'react-icons/md';
-import { sliderAtom, sliderLoadingAtom } from '../../../lib/atoms/slider.atom';
+import { sliderAtom, sliderDisplayComponentAtom, sliderLoaderComponentAtom, sliderLoadingAtom } from '../../../lib/atoms/slider.atom';
+import LoadingSpinner from '../LoadingSpinner';
 
-interface Props {
-  children?: React.ReactNode;
-}
-
-export const useSlidingPanel = () => {
+export const useSlidingPanel = (
+  externalSlideOpener?: (state: boolean) => void,
+  isLoading?: boolean,
+  dataLoaderComponent?: React.ReactNode,
+  dataComponent?: React.ReactNode,
+) => {
   const [slide, setSlide] = useAtom(sliderAtom);
   const [slideLoading, setSlideLoading] = useAtom(sliderLoadingAtom);
+  const [displayComponent, setDisaplyComponent] = useAtom(sliderDisplayComponentAtom);
+  const [LoaderComponent, setLoaderComponent] = useAtom(sliderLoaderComponentAtom);
 
   const toggleSlide = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
@@ -20,11 +24,54 @@ export const useSlidingPanel = () => {
     setSlide(false);
   };
 
-  return { slide, setSlide, slideLoading, toggleSlide, closeSlidePanel };
+  const handleSlidePanel = (e: React.MouseEvent<HTMLButtonElement>) => {
+    toggleSlide(e);
+    if (externalSlideOpener) {
+      externalSlideOpener(!slide);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof isLoading !== 'undefined') {
+      setSlideLoading(isLoading);
+    }
+  }, [isLoading, setSlideLoading]);
+
+  useEffect(() => {
+    if (!slide && externalSlideOpener) {
+      externalSlideOpener(false);
+    }
+  }, [slide, externalSlideOpener]);
+
+  useEffect(() => {
+    if (!displayComponent) {
+      setDisaplyComponent(dataComponent);
+    }
+  }, [dataComponent, displayComponent, setDisaplyComponent]);
+
+  useEffect(() => {
+    if (!LoaderComponent) {
+      setLoaderComponent(dataLoaderComponent);
+    }
+  }, [LoaderComponent, dataLoaderComponent, setLoaderComponent]);
+
+  return {
+    slide,
+    setSlide,
+    slideLoading,
+    setSlideLoading,
+    displayComponent,
+    setDisaplyComponent,
+    LoaderComponent,
+    setLoaderComponent,
+    toggleSlide,
+    closeSlidePanel,
+    handleSlidePanel,
+  };
 };
 
-const SlidingPanel = ({ children }: Props) => {
-  const { slide, closeSlidePanel } = useSlidingPanel();
+const SlidingPanel = () => {
+  const { slide, slideLoading, displayComponent, setDisaplyComponent, LoaderComponent, setLoaderComponent, closeSlidePanel } = useSlidingPanel();
   const [enterAnimation, setEnterAnimation] = useState<boolean>(false);
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +81,9 @@ const SlidingPanel = ({ children }: Props) => {
       currentChildElement && currentChildElement.classList.add('exit-panel');
       currentChildElement && currentChildElement.addEventListener('animationend', closeSlidePanel);
     }
-  }, [closeSlidePanel]);
+    setDisaplyComponent(null);
+
+  }, [closeSlidePanel, setDisaplyComponent]);
 
   const handleEntryAnimation = () => {
     const currentChildElement = document.querySelector('.panel-body') as HTMLElement;
@@ -47,7 +96,12 @@ const SlidingPanel = ({ children }: Props) => {
     if (slide) {
       setEnterAnimation(true);
     }
-  }, [slide]);
+    return () => {
+      document.body.style.overflow = '';
+      setDisaplyComponent(null);
+      setLoaderComponent(null);
+    };
+  }, [setDisaplyComponent, setLoaderComponent, slide]);
 
   useEffect(() => {
     const currentChildElement = document.querySelector('.panel-body') as HTMLElement;
@@ -64,6 +118,7 @@ const SlidingPanel = ({ children }: Props) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sliderRef.current && !sliderRef.current.contains(event.target as Node)) {
+        setDisaplyComponent(null);
         closeToggle();
       }
     };
@@ -72,8 +127,9 @@ const SlidingPanel = ({ children }: Props) => {
 
     return () => {
       document.removeEventListener('click', handleClickOutside);
+      
     };
-  }, [closeToggle]);
+  }, [closeToggle, setDisaplyComponent]);
 
   const onMouseEnterHandelr = () => {
     document.body.style.overflow = 'hidden';
@@ -85,7 +141,7 @@ const SlidingPanel = ({ children }: Props) => {
 
   return slide ? (
     <div
-      className="border fixed right-0 top-0 w-full md:w-1/4 h-screen bg-slate-50 rounded px-2 panel-body"
+      className="border fixed right-0 top-0 w-full md:w-1/2 h-screen bg-slate-50 rounded px-2 panel-body"
       ref={sliderRef}
       onMouseEnter={onMouseEnterHandelr}
       onMouseLeave={onMouseExitHandelr}
@@ -94,7 +150,17 @@ const SlidingPanel = ({ children }: Props) => {
         <MdOutlineArrowBack />
         <span className="ml-2">Back</span>
       </div>
-      <div>SlidingPanel</div>
+      {slideLoading ? (
+        LoaderComponent ? (
+          LoaderComponent
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <LoadingSpinner style="fill-sky-800" />
+          </div>
+        )
+      ) : (
+        displayComponent
+      )}
     </div>
   ) : null;
 };
