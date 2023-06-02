@@ -10,6 +10,7 @@ import '../styles/globals.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import 'react-loading-skeleton/dist/skeleton.css'
 import GenericLoading from '../components/shared-components/GenericLoading';
 import SlidingPanel from '../components/shared-components/sliding-panel-components/SlidingPanel';
 import { sliderAtom } from '../lib/atoms/slider.atom';

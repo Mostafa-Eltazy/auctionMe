@@ -16,6 +16,7 @@ import { determineCategory } from '../../util/utilities';
 import { useSlidingPanel } from '../shared-components/sliding-panel-components/SlidingPanel';
 import { useAuctionBids } from '../../lib/hooks/bids.hooks';
 import BidsTable from './table-component/BidsTable';
+import GenericPlacholder from '../loading-placeholders/GenericPlacholder';
 
 interface Props {
   auction: Auction;
@@ -34,7 +35,7 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
 
   const { data: itemsData, isLoading: itemsLoading, refetch: itemsRefetch } = useAuctionItems(auction.id, toggle);
   const { data: bidsData, isLoading: bidsDataLoading, refetch: bidsDataRefetch } = useAuctionBids(auction.id, openPanel);
-  const { handleSlidePanel } = useSlidingPanel(setOpenPanel, bidsDataLoading, <span>loading bids data...</span>, <BidsTable data={bidsData?.bids} isLoading={bidsDataLoading}/>);
+  const { handleSlidePanel } = useSlidingPanel(setOpenPanel, bidsDataLoading, <GenericPlacholder numberOfRows={10}/>, <BidsTable data={bidsData?.bids} isLoading={bidsDataLoading}/>);
 
   const handleToggleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     setToggle(!toggle);
@@ -97,7 +98,7 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
         <div>
           <p>
             Auctioned by
-            <Link className="hover:border-b text-blue-800 border-b-blue-800 ml-1" href={`/user/${auction.id}`}>
+            <Link className="hover:border-b text-blue-800 border-b-blue-800 ml-1" href={`/user/${auction?.auctioneer?.username}`}>
               {auction?.auctioneer?.username}
             </Link>
           </p>
