@@ -8,6 +8,7 @@ export interface IUserController {
   fetchUser(req: Request, res: Response, next: NextFunction): Promise<void>;
   fetchFeatuedUsers(req: Request, res: Response, next: NextFunction): Promise<void>;
   fetchUserStats(req: Request, res: Response, next: NextFunction): Promise<void>;
+  fetchUserAuctions(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
 
 export class UserController implements IUserController {
@@ -53,4 +54,18 @@ export class UserController implements IUserController {
       next(err);
     }
   };
+
+  public fetchUserAuctions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = parseInt(req.query.userId as string)
+    const limit = parseInt(req.query.limit as string);
+    const page = parseInt(req.query.page as string);
+    try {
+      const data = await this.userService.getUserAuctions(userId, limit, page);
+      res.status(200).json(data);
+    }catch (err) {
+      next(err);
+    }
+    
+  };
+
 }
