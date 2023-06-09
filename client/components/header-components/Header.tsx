@@ -1,7 +1,4 @@
-import Link from 'next/link';
-import { GiGreekTemple } from 'react-icons/Gi';
 import React, { useState, useEffect } from 'react';
-import Logo from './Logo';
 import { useAtom } from 'jotai';
 import { userAtom, userLoadingAtom } from '../../lib/atoms/user.atom';
 import GenericHeader from './GenericHeader';
@@ -33,7 +30,7 @@ const Header = ({page}:Props) => {
   }, []);
 
   return (
-    <header className={`grid ${user ? 'grid-cols-8' : 'grid-cols-2 md:grid-cols-3'} bg-slate-50 pt-2 ${isSticky ? 'top-0 z-10 sticky shadow-lg w-full' : ''} `}>
+    <header className={`header grid ${user ? 'grid-cols-8' : 'grid-cols-2 md:grid-cols-3'} bg-slate-50 pt-2 top-0 fixed w-full z-10 ${isSticky ? 'shadow-lg' : ''} `}>
       {user ? (
         <UserHeader
           routes={headerRoutes}

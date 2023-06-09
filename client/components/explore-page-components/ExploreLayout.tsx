@@ -4,9 +4,10 @@ import { useCategories } from '../../lib/hooks/categories.hooks';
 import PagePagination from '../shared-components/pagination-component/PagePagination';
 import AuctionVerticalCardPlaceholde from '../loading-placeholders/AuctionVerticalCardPlaceholde';
 import AuctionsList from './AuctionsList';
-import ExplorePageBanner from './ExplorePageBanner';
 import { renderPlaceholders } from '../../util/utilities';
 import PagePaginationPlaceholde from '../loading-placeholders/PagePaginationPlaceholder';
+import Banner from '../shared-components/Banner';
+import Link from 'next/link';
 
 const ExploreLayout = () => {
   const [page, setPage] = React.useState(1);
@@ -27,10 +28,23 @@ const ExploreLayout = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setPage(page);
   };
+
   return (
     <div className="grid grid-cols-8 mt-5">
       <div className="col-span-4 col-start-2 col-end-8 ">
-        <ExplorePageBanner />
+        <Banner
+          main="This is were all the Au/A ction is"
+          subText={
+            <h2 className="text-center tesxt-md text-slate-500 mt-4 px-2">
+              Not sure how it works ?
+              <span className="text-blue-800 ml-1">
+                <Link className="hover:border-b border-b-blue-800" href="/learn-more">
+                  Learn more
+                </Link>
+              </span>{' '}
+            </h2>
+          }
+        />
         {auctionsLoading || categoriesLoading ? (
           renderPlaceholders(10, <AuctionVerticalCardPlaceholde />)
         ) : auctionsData?.auctions && auctionsData?.auctions?.length > 0 ? (
@@ -45,7 +59,7 @@ const ExploreLayout = () => {
         )}
         {auctionsLoading || categoriesLoading ? (
           <PagePaginationPlaceholde />
-        ) : auctionsData?.auctions && auctionsData?.auctions?.length > 0 ? (
+        ) : auctionsData?.auctions && auctionsData?.auctions?.length > 0 && auctionsData.count > auctionsData.limit ? (
           <PagePagination
             currentPage={page}
             totalPages={auctionsData.count / auctionsData.limit}

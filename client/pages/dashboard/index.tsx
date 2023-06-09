@@ -6,11 +6,11 @@ import AuthGuard from '../../components/shared-components/AuthGuard';
 import GenericLoading from '../../components/shared-components/GenericLoading';
 import { userAtom, userLoadingAtom } from '../../lib/atoms/user.atom';
 import { useRouter } from 'next/router';
+import DashboardLayout from '../../components/dashboard-page-components/DashboardLayout';
 
 const DashboardIndex: NextPage = () => {
   const [user, setUser] = useAtom(userAtom);
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
-
 
   return (
     <>
@@ -19,9 +19,9 @@ const DashboardIndex: NextPage = () => {
           <GenericLoading />
         ) : (
           <>
-            <Header page='dashboard'/>
-            <div className="mb-4">Home Page</div>
-            <Footer />
+            <Header page="dashboard" />
+              <DashboardLayout user={user} />
+            
           </>
         )}
       </AuthGuard>
