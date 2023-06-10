@@ -20,8 +20,7 @@ const DashboardIndex: NextPage = () => {
         ) : (
           <>
             <Header page="dashboard" />
-              <DashboardLayout user={user} />
-            
+            <DashboardLayout />
           </>
         )}
       </AuthGuard>
