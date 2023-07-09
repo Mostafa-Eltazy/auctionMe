@@ -62,7 +62,7 @@ const ExploreLayout = () => {
         ) : auctionsData?.auctions && auctionsData?.auctions?.length > 0 && auctionsData.count > auctionsData.limit ? (
           <PagePagination
             currentPage={page}
-            totalPages={auctionsData.count / auctionsData.limit}
+            totalPages={Math.ceil(auctionsData.count / auctionsData.limit)}
             moveForward={moveForward}
             moveBackward={moveBackward}
             selectPage={selectPage}

@@ -1,4 +1,5 @@
 import { Auction } from '../interfaces/auction.interface';
+import { Bid } from '../interfaces/bid.interface';
 import { User } from '../interfaces/user.interface';
 import client from './client';
 
@@ -47,7 +48,16 @@ export const fetchUserAuctions = async (params?: {
   userId: number | undefined;
   limit: number;
   page: number;
-}): Promise<{ auctions: Auction[]; count: number; limit: number }> => {
-  const response = await client.get<{ auctions: Auction[]; count: number; limit: number }>(`user/auctions`, { params });
+}): Promise<{ userAuctions: Auction[]; count: number; limit: number }> => {
+  const response = await client.get<{ userAuctions: Auction[]; count: number; limit: number }>(`user/auctions`, { params });
+  return response.data;
+};
+
+export const fetchUserBids = async (params?: {
+  userId: number | undefined;
+  limit: number;
+  page: number;
+}): Promise<{ userBids: (Bid & { Auction: Auction })[]; count: number; limit: number }> => {
+  const response = await client.get<{ userBids: (Bid & { Auction: Auction })[]; count: number; limit: number }>(`user/bids`, { params });
   return response.data;
 };

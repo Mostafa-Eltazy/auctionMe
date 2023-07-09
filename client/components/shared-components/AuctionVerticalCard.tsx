@@ -17,6 +17,8 @@ import { useSlidingPanel } from '../shared-components/sliding-panel-components/S
 import { useAuctionBids } from '../../lib/hooks/bids.hooks';
 import BidsTable from './table-component/BidsTable';
 import GenericPlacholder from '../loading-placeholders/GenericPlacholder';
+import { useAtom } from 'jotai';
+import { userAtom } from '../../lib/atoms/user.atom';
 
 interface Props {
   auction: Auction;
@@ -29,13 +31,18 @@ const linkButtonStyle =
   'disabled:border-gray-300 disabled:text-gray-500 bg-transperant text-slate-600   py-1.5 px-2 my-1 rounded hover:text-sky-600 hover:underline';
 
 const AuctionVerticalCard = ({ auction, categories }: Props) => {
-
   const [toggle, setToggle] = useState<boolean>(false);
   const [openPanel, setOpenPanel] = useState<boolean>(false);
+  const [user, setUser] = useAtom(userAtom);
 
   const { data: itemsData, isLoading: itemsLoading, refetch: itemsRefetch } = useAuctionItems(auction.id, toggle);
   const { data: bidsData, isLoading: bidsDataLoading, refetch: bidsDataRefetch } = useAuctionBids(auction.id, openPanel);
-  const { handleSlidePanel } = useSlidingPanel(setOpenPanel, bidsDataLoading, <GenericPlacholder numberOfRows={10}/>, <BidsTable data={bidsData?.bids} isLoading={bidsDataLoading}/>);
+  const { handleSlidePanel } = useSlidingPanel(
+    setOpenPanel,
+    bidsDataLoading,
+    <GenericPlacholder numberOfRows={10} />,
+    <BidsTable data={bidsData?.bids} isLoading={bidsDataLoading} />,
+  );
 
   const handleToggleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     setToggle(!toggle);
@@ -66,11 +73,13 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
 
       <div className="flex flex-col-reverse md:flex-row items-center md:items-end justify-between mt-2 mb-2">
         <div className="flex flex-col">
-          <button className={`flex items-center ${actionButtonStyle}`}>
-            <BsBookmarkPlus className="text-xl mr-1" />
+          {user?.id === auction.auctioneerId ? null : (
+            <button className={`flex items-center ${actionButtonStyle}`}>
+              <BsBookmarkPlus className="text-xl mr-1" />
 
-            <p className="text-center text-sm">Add to Watchlist</p>
-          </button>
+              <p className="text-center text-sm">Add to Watchlist</p>
+            </button>
+          )}
 
           <button className={`flex items-center ${actionButtonStyle}`} onClick={handleToggleClick}>
             <IoIosArrowForward className="rotate-icon mr-1" />
@@ -98,8 +107,11 @@ const AuctionVerticalCard = ({ auction, categories }: Props) => {
         <div>
           <p>
             Auctioned by
-            <Link className="hover:border-b text-blue-800 border-b-blue-800 ml-1" href={`/user/${auction?.auctioneer?.username}`}>
-              {auction?.auctioneer?.username}
+            <Link
+              className="hover:border-b text-blue-800 border-b-blue-800 ml-1"
+              href={`${user?.id === auction.auctioneerId ? '/me' : `/users/${auction?.auctioneer?.username}`}`}
+            >
+              {user?.id === auction.auctioneerId ? 'You' : auction?.auctioneer?.username}
             </Link>
           </p>
         </div>

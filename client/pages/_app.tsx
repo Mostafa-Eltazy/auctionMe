@@ -14,12 +14,16 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import GenericLoading from '../components/shared-components/GenericLoading';
 import SlidingPanel from '../components/shared-components/sliding-panel-components/SlidingPanel';
 import { sliderAtom } from '../lib/atoms/slider.atom';
+import Modal from '../components/shared-components/modal-components/Modal';
+import { modalAtom } from '../lib/atoms/modal.atom';
 
 const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }: AppProps) {
   const [user, setUser] = useAtom(userAtom);
   const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
-  const [slide, setslide] = useAtom(sliderAtom)
+  const [slide] = useAtom(sliderAtom)
+  const [modal] = useAtom(modalAtom)
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -43,10 +47,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={`app-container ${slide ? 'blur ' : ''}`}>
+      <div className={`app-container ${slide || modal ? 'blur ' : ''}`}>
       {userLoading ? <GenericLoading /> : <Component {...pageProps} />}
       </div>
       <SlidingPanel />
+      <Modal />
       <ToastContainer />
     </QueryClientProvider>
   );

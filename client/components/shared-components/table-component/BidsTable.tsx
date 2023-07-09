@@ -1,5 +1,8 @@
+import { useAtom } from 'jotai';
 import React, { useState, useEffect } from 'react';
+import { userAtom } from '../../../lib/atoms/user.atom';
 import { Bid } from '../../../lib/interfaces/bid.interface';
+import Badge from '../Badge';
 import Table from './Table';
 
 interface Props {
@@ -11,6 +14,7 @@ const linkButtonStyle =
 
 const BiddingTable = ({ data, isLoading }: Props) => {
   const PAGE_SIZE = 10;
+  const [user, setUser] = useAtom(userAtom);
 
   const tableStyles = {
     headCells: {
@@ -31,6 +35,7 @@ const BiddingTable = ({ data, isLoading }: Props) => {
     rows: {
       style: {
         maring: '5px',
+        back: 'red',
         '&:hover': {
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         },
@@ -48,9 +53,12 @@ const BiddingTable = ({ data, isLoading }: Props) => {
     {
       name: 'Bider',
       selector: (row: { bider: { username: string } }) => (
-        <a href={`/user/${row.bider.username}`} className={linkButtonStyle}>
+        <>
+        <a href={`${row.bider.username === user?.username ? '/me' : `/user/${row.bider.username}`}`} className={linkButtonStyle}>
           {row.bider.username}
         </a>
+        {row.bider.username === user?.username && <Badge text="you" />}
+        </>
       ),
       center: true,
     },

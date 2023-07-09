@@ -1,4 +1,4 @@
-import { User, Auction } from '@prisma/client';
+import { User, Auction, Bid } from '@prisma/client';
 import { prisma } from '../database';
 
 export interface IUserService {
@@ -7,6 +7,8 @@ export interface IUserService {
   getFeaturedUsers(): Promise<Partial<User>[]>;
   getUserStats(userId: number): Promise<{ username: string; profilePicture: string | null }>;
   getUserAuctions(userId: number, limit: number, page: number): Promise<{ userAuctions: Auction[]; count: number; limit: number }>;
+  getUserBids(userId: number, limit: number, page: number): Promise<{ userBids: Bid[]; count: number; limit: number }>;
+
 }
 
 export class UserService implements IUserService {
@@ -50,5 +52,20 @@ export class UserService implements IUserService {
       }),
     ]);
     return { userAuctions: data, count, limit };
+  };
+
+  public getUserBids = async (userId: number, limit: number, page: number): Promise<{ userBids: Bid[]; count: number; limit: number }> => {
+    const offset = limit * (page - 1);
+    const [count, data] = await Promise.all([
+      prisma.bid.count({where: {biderId: userId}}),
+      prisma.bid.findMany({
+        where: { biderId: userId },
+        take: limit,
+        skip: offset,
+        include: {Auction: {select: {title: true, auctioneer: {select: {username: true}}}}},
+        orderBy: { updatedAt: 'desc' },
+      }),
+    ]);
+    return { userBids: data, count, limit };
   };
 }

@@ -3,7 +3,7 @@ import Paginator from './Paginator';
 
 interface Props {
   currentPage: number;
-  totalPages : number;
+  totalPages? : number;
   moveForward: () => void;
   moveBackward: () => void;
   selectPage: (page: number) => void;

@@ -1,7 +1,7 @@
 const headerRoutes = [
   { name: 'Dashboard', slug: 'dashboard' },
   { name: 'Explore', slug: 'explore' },
-  { name: 'Watchlist', slug: 'watchlist' },
+  // { name: 'Watchlist', slug: 'watchlist' },
 ];
 
 const dashboardViews = [

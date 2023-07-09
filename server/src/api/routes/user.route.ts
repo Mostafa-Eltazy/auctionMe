@@ -18,6 +18,8 @@ class UserRoute implements Route {
     this.router.get(`/user/:userId/stats`, auth, this.userController.fetchUserStats);
     this.router.get(`${this.path}/featured`, auth, this.userController.fetchFeatuedUsers);
     this.router.get(`/user/auctions`, auth, this.userController.fetchUserAuctions);
+    this.router.get(`/user/bids`, auth, this.userController.fetchUserBids);
+
   }
 }
 
